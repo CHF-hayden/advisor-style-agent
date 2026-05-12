@@ -1,5 +1,12 @@
 # AdvisorStyle Agent
 
+> Long-term supervisor-style memory for academic writing in Codex.
+
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-ff4b4b)
+![Zotero Ready](https://img.shields.io/badge/Zotero-ready-2563eb)
+![Codex Skill](https://img.shields.io/badge/Codex-skill-7c3aed)
+![No API Key Required](https://img.shields.io/badge/API%20key-not%20required-16a34a)
+
 AdvisorStyle Agent is a beginner-friendly Streamlit app for long-term
 supervisor-style academic writing support. The project helps users collect
 writing samples from one supervisor, build a local supervisor style profile,
@@ -9,6 +16,23 @@ rewrite prompts inside Codex.
 The app runs without API keys. It saves local JSON profiles and prepares
 structured prompts that can later be connected to OpenAI, DeepSeek, Zotero
 Skill, or the Zotero API.
+
+## Quick Navigation
+
+| Area | What it does | Main files |
+|---|---|---|
+| Build memory | Analyze supervisor papers and update style memory | `app.py`, `llm/profile_manager.py` |
+| Store memory | Save reusable supervisor profiles | `profiles/*.json` |
+| Rewrite drafts | Use saved profiles to prepare revision prompts | `llm/rewrite_engine.py` |
+| Maintain workflow | Guide Codex project work | `skills/advisor-style-agent-workflow/` |
+
+```text
+Zotero papers
+  -> style analysis
+  -> profiles/professor_x_profile.json
+  -> your draft
+  -> profile-aware revision
+```
 
 ## Long-term Vision
 
@@ -23,6 +47,36 @@ user's research workflow:
 4. Use the saved profile to polish, revise, and improve academic drafts in a
    style that is closer to the target supervisor while preserving academic
    integrity.
+
+## Style Memory Principle
+
+The system does not become smarter by changing the model itself. Its long-term
+memory is a local profile file, for example:
+
+```text
+profiles/professor_x_profile.json
+```
+
+Each time you feed a new batch of supervisor papers, Zotero metadata, abstracts,
+or notes into the project, the app should update that profile. Later, when you
+rewrite your own draft, the app reads the saved profile and uses it as style
+guidance.
+
+```text
+[1] Supervisor papers in Zotero
+        |
+        v
+[2] Codex / Zotero Skill retrieves literature information
+        |
+        v
+[3] AdvisorStyle Agent analyzes writing style
+        |
+        v
+[4] Update profiles/professor_x_profile.json
+        |
+        v
+[5] User draft -> profile-aware revision
+```
 
 ## Streamlit Tabs
 
@@ -47,25 +101,36 @@ rewriting prompt.
 Read simple Zotero Skill commands and a safe workflow for converting Zotero
 records into local literature context.
 
-## Workflow Diagram
+## Workflow Map
+
+| Step | Screen or tool | Output |
+|---|---|---|
+| 1 | Zotero Skill or pasted text | Supervisor literature input |
+| 2 | Build / Update Supervisor Profile | Updated style observations |
+| 3 | `profiles/*.json` | Local supervisor style memory |
+| 4 | View Supervisor Profile | Reviewable profile JSON |
+| 5 | Rewrite My Draft | Profile-aware rewrite prompt |
+| 6 | Codex or LLM | Revised academic draft |
 
 ```mermaid
-flowchart TD
-    A["Zotero library, BibTeX, abstracts, notes, or pasted paper text"] --> B["Build / Update Supervisor Profile"]
-    B --> C["Analyze writing style"]
-    C --> D["profiles/supervisor_profile.json"]
+flowchart LR
+    classDef source fill:#eef6ff,stroke:#3b82f6,color:#0f172a,stroke-width:1px;
+    classDef memory fill:#f0fdf4,stroke:#16a34a,color:#0f172a,stroke-width:1px;
+    classDef writing fill:#fff7ed,stroke:#f97316,color:#0f172a,stroke-width:1px;
+    classDef codex fill:#f8fafc,stroke:#64748b,color:#0f172a,stroke-width:1px,stroke-dasharray:4 3;
 
-    D --> E["View Supervisor Profile"]
-    D --> F["Rewrite My Draft"]
+    Z["Zotero papers<br/>metadata / abstracts / notes"]:::source
+    A["Style analysis"]:::memory
+    P["Supervisor Style Profile<br/><code>profiles/professor_x_profile.json</code>"]:::memory
+    D["Your academic draft"]:::writing
+    R["Profile-aware revision"]:::writing
+    C["Codex<br/>maintains prompts and code"]:::codex
 
-    G["User academic draft"] --> F
-    F --> H["Profile-aware rewrite prompt"]
-    H --> I["Codex or LLM-assisted revision"]
-
-    J["Zotero Skill"] --> A
-    K["Codex"] --> B
-    K --> F
-    K --> L["Maintain prompts and Python modules"]
+    Z --> A --> P --> R
+    D --> R
+    C -.-> Z
+    C -.-> A
+    C -.-> R
 ```
 
 ## Supervisor Profile Format
@@ -105,6 +170,11 @@ advisor-style-agent/
 |   `-- zotero_input.py
 |-- profiles/
 |   `-- example_supervisor_profile.json
+|-- skills/
+|   `-- advisor-style-agent-workflow/
+|       |-- SKILL.md
+|       `-- agents/
+|           `-- openai.yaml
 `-- prompts/
     |-- draft_rewriter.md
     |-- draft_rewriter_with_profile.md
@@ -112,6 +182,26 @@ advisor-style-agent/
     |-- profile_updater.md
     |-- style_analyzer.md
     `-- zotero_literature_input.md
+```
+
+## Included Codex Skill
+
+This repository includes a Codex skill for maintaining the project:
+
+```text
+skills/advisor-style-agent-workflow/SKILL.md
+```
+
+The skill captures the main operating rules for this project: supervisor style
+memory lives in `profiles/*.json`, Zotero input should update those profiles,
+and draft rewriting should read the saved profile as style guidance. It also
+keeps the academic integrity rules close to the workflow.
+
+To install or adapt it locally, copy the skill folder into your Codex skills
+directory:
+
+```text
+<CODEX_HOME>/skills/advisor-style-agent-workflow/
 ```
 
 ## Quick Start
@@ -240,6 +330,32 @@ AdvisorStyle Agent 是一个面向长期学术写作训练的 Streamlit 小工�
 
 当前版本不需要 API key。系统会把导师风格画像保存在本地 `profiles/` 文件夹中，并生成可交给 LLM 的结构化提示词。
 
+## 风格记忆原则
+
+这里的“让它一直成长”，不是指模型自己真的变聪明，也不是修改模型权重。项目的长期记忆就是一个持续更新的本地文件，例如：
+
+```text
+profiles/professor_x_profile.json
+```
+
+以后每喂一批导师论文、Zotero 文献元数据、摘要或笔记，就更新这个 profile。后面润色自己的论文草稿时，系统读取这个 profile，并把它作为导师写作风格参考。
+
+```text
+[1] Zotero 中的导师论文
+        |
+        v
+[2] Codex / Zotero Skill 调用文献信息
+        |
+        v
+[3] AdvisorStyle Agent 分析导师写作风格
+        |
+        v
+[4] 保存或更新 profiles/professor_x_profile.json
+        |
+        v
+[5] 你的论文草稿 -> 按导师风格润色、修改、优化
+```
+
 ## 长期目标
 
 理想工作流是：
@@ -269,23 +385,20 @@ AdvisorStyle Agent 是一个面向长期学术写作训练的 Streamlit 小工�
 
 ## 中文工作流图
 
-```mermaid
-flowchart TD
-    A["Zotero 文献库、BibTeX、摘要、笔记或论文文本"] --> B["创建/更新导师画像"]
-    B --> C["分析写作风格"]
-    C --> D["profiles/导师画像.json"]
-
-    D --> E["查看导师画像"]
-    D --> F["改写我的草稿"]
-
-    G["用户论文草稿"] --> F
-    F --> H["带画像约束的改写提示词"]
-    H --> I["Codex 或 LLM 辅助修改"]
-
-    J["Zotero Skill"] --> A
-    K["Codex"] --> B
-    K --> F
-    K --> L["维护提示词和 Python 模块"]
+```text
+[1] Zotero 文献
+        |
+        v
+[2] 创建 / 更新导师画像
+        |
+        v
+[3] 保存本地 profile 文件
+        |
+        v
+[4] 输入我的论文草稿
+        |
+        v
+[5] 按导师风格修改
 ```
 
 ## 运行方式
