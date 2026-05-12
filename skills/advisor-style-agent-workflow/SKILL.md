@@ -30,8 +30,16 @@ in external local Codex Skills, not in the public repository.
    architecture.
 4. For memory changes, keep the data path explicit:
    Zotero input -> profile update -> revision memory -> profile-aware rewrite.
-5. Validate by importing the relevant helper functions with `python -B`.
-6. If publishing changes, create a clear branch, commit only intended files, and
+5. Before manuscript revision, retrieve supervisor memory from:
+   `profiles/`, `revision_memory/`, and saved Zotero source records.
+6. Revise using retrieved memory plus any private local Skill context supplied
+   by the user.
+7. Learn from before/after revision pairs only after the user confirms the
+   revision is useful or supervisor-approved.
+8. Avoid unsupported generalization from a single paper, metadata record, or
+   revision pair.
+9. Validate by importing the relevant helper functions with `python -B`.
+10. If publishing changes, create a clear branch, commit only intended files, and
    push to GitHub.
 
 ## Academic Integrity Rules
@@ -76,6 +84,10 @@ clearly labeled. Do not overwrite useful profile content unless the user asks.
 Prompt files live in `prompts/`. Keep them reusable and explicit about evidence
 boundaries. The important templates are:
 
+- `learn_revision_pair.md`
+- `retrieve_supervisor_memory.md`
+- `revise_with_supervisor_memory.md`
+- `update_supervisor_profile.md`
 - `profile_builder.md`
 - `profile_updater.md`
 - `draft_rewriter_with_profile.md`
@@ -85,6 +97,13 @@ boundaries. The important templates are:
 
 Prompts should ask the LLM to flag missing evidence instead of fabricating
 citations or claims.
+
+Workflow templates live in `templates/`:
+
+- `manuscript_revision_workflow.md`
+- `supervisor_learning_workflow.md`
+
+Use these templates to keep Codex behavior consistent across sessions.
 
 ## External Skill Layers
 
@@ -146,6 +165,19 @@ Use this workflow when combining the public framework with private Codex Skills:
 Public repository output should remain generic. Private local Skill context can
 guide the revision in the user's environment, but it should not be committed to
 this repository.
+
+## Manuscript Revision Behavior
+
+When asked to revise a manuscript:
+
+1. Retrieve memory first.
+2. Assemble style, revision, and evidence-aware context.
+3. Apply private local Skill context only if the user provides or enables it.
+4. Revise the text without inventing evidence.
+5. Ask whether the before/after pair should be saved as revision memory.
+
+Do not automatically learn from every generated revision. Only confirmed
+supervisor edits or user-approved revisions should update long-term memory.
 
 ## Placeholder Example
 
