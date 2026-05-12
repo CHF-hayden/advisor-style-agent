@@ -13,6 +13,7 @@ from llm.profile_manager import (
 )
 from llm.revision_memory_manager import learn_from_revision_pair
 from llm.rewrite_engine import build_rewrite_with_profile_result
+from llm.zotero_metadata_ingestor import ingest_zotero_metadata, parse_zotero_metadata
 
 
 st.set_page_config(
@@ -243,6 +244,53 @@ Codex Skills or user-provided context.
 
 
 with tab_zotero:
+    st.subheader("Add Zotero Metadata")
+    st.write(
+        "Paste Zotero-style metadata, BibTeX, RIS-like text, or plain text. "
+        "This parser is local-only and does not call the Zotero API."
+    )
+
+    zotero_supervisor_id = st.text_input(
+        "Supervisor ID for Zotero sources",
+        value="example_supervisor",
+        help="Saved records go to profiles/{supervisor_id}_zotero_sources.json.",
+    )
+    pasted_metadata = st.text_area(
+        "Pasted metadata",
+        height=220,
+        placeholder=(
+            "Paste BibTeX, RIS-like metadata, or plain text fields such as "
+            "Title:, Authors:, Year:, Journal:, DOI:, Abstract:, Keywords:."
+        ),
+    )
+
+    col_preview, col_save = st.columns([1, 1])
+    parsed_record = None
+    with col_preview:
+        if st.button("Parse Metadata Preview"):
+            if not pasted_metadata.strip():
+                st.warning("Please paste metadata first.")
+            else:
+                parsed_record = parse_zotero_metadata(pasted_metadata)
+                st.markdown("#### Parse preview")
+                st.json(parsed_record)
+
+    with col_save:
+        if st.button("Save Metadata Record", type="primary"):
+            if not zotero_supervisor_id.strip():
+                st.warning("Please enter a supervisor ID.")
+            elif not pasted_metadata.strip():
+                st.warning("Please paste metadata first.")
+            else:
+                result = ingest_zotero_metadata(
+                    supervisor_id=zotero_supervisor_id,
+                    raw_input=pasted_metadata,
+                    save=True,
+                )
+                st.success(f"Zotero metadata saved to `{result['path']}`.")
+                st.json(result["record"])
+
+    st.divider()
     st.subheader("Zotero + External Codex Skills")
     st.write(
         "Use Zotero Skill to retrieve literature context. Use local Codex Skills "

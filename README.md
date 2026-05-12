@@ -109,6 +109,7 @@ advisor-style-agent/
 |   |-- prompt_loader.py
 |   |-- rewrite_engine.py
 |   |-- style_analyzer.py
+|   |-- zotero_metadata_ingestor.py
 |   `-- zotero_input.py
 |-- profiles/
 |   `-- example_supervisor_profile.json
@@ -150,6 +151,14 @@ streamlit run app.py
 
 The GitHub framework stays general-purpose. Use Zotero and local Codex Skills to
 bring in external context:
+
+The current prototype supports pasted Zotero-style metadata, BibTeX, RIS-like
+text, or plain text fields. It does not require Zotero API authentication or any
+network calls. Parsed records are saved to:
+
+```text
+profiles/{supervisor_id}_zotero_sources.json
+```
 
 ```bash
 python3 <plugin-root>/skills/zotero/scripts/zotero.py status --json
