@@ -6,14 +6,12 @@ import streamlit as st
 
 from llm.profile_manager import (
     build_profile_update,
-    build_revision_memory_update,
     default_profile_path,
-    default_revision_memory_path,
     list_profiles,
     load_profile,
     save_profile,
-    save_revision_memory,
 )
+from llm.revision_memory_manager import learn_from_revision_pair
 from llm.rewrite_engine import build_rewrite_with_profile_result
 
 
@@ -62,7 +60,7 @@ Domain knowledge belongs in local Codex Skills, not hardcoded in this public rep
 tab_profile, tab_revision, tab_rewrite, tab_memory, tab_zotero = st.tabs(
     [
         "Build Supervisor Profile",
-        "Learn From Revisions",
+        "Learn from Revision Pair",
         "Rewrite Academic Draft",
         "Memory Architecture",
         "Zotero + Codex Skills",
@@ -138,37 +136,38 @@ with tab_profile:
 
 
 with tab_revision:
-    st.subheader("Learn From Revisions")
+    st.subheader("Learn from Revision Pair")
     st.write(
-        "Compare an original draft with a revised version. The app prepares "
-        "revision-memory guidance that can be saved in `revision_memory/`."
+        "Paste an original paragraph and the revised version. The app creates "
+        "a structured revision memory record and appends it to `revision_memory/`."
     )
 
-    profile_id = profile_selector("Supervisor profile for revision memory")
-    original_draft = st.text_area("Original draft", height=180)
-    revised_draft = st.text_area("Revised draft or supervisor-edited version", height=180)
+    profile_id = profile_selector("Supervisor ID for revision memory")
+    original_draft = st.text_area("Original text before revision", height=180)
+    revised_draft = st.text_area("Revised text after supervisor/Codex revision", height=180)
     feedback_notes = st.text_area(
         "Optional feedback notes",
         height=120,
         placeholder="Paste reviewer, supervisor, or Codex revision notes here...",
     )
 
-    if st.button("Update Revision Memory", type="primary"):
+    if st.button("Learn from Revision Pair", type="primary"):
         if not profile_id:
             st.warning("Please create or select a supervisor profile first.")
         elif not original_draft.strip() or not revised_draft.strip():
-            st.warning("Please provide both the original and revised draft.")
+            st.warning("Please provide both the original and revised text.")
         else:
-            result = build_revision_memory_update(
-                profile_id=profile_id,
-                original_draft=original_draft,
-                revised_draft=revised_draft,
-                feedback_notes=feedback_notes,
+            result = learn_from_revision_pair(
+                original_text=original_draft,
+                revised_text=revised_draft,
+                supervisor_id=profile_id,
+                notes=feedback_notes,
+                save=True,
             )
-            save_revision_memory(profile_id, result["record"])
-            st.success(f"Revision memory saved to `{default_revision_memory_path(profile_id)}`.")
+            st.success(f"Revision memory saved to `{result['path']}`.")
+            st.markdown("#### Structured revision memory")
             st.json(result["record"])
-            show_prompt_block("Revision-memory updater prompt", result["prompt"])
+            show_prompt_block("LLM prompt for deeper revision-pattern extraction", result["prompt"])
 
 
 with tab_rewrite:
