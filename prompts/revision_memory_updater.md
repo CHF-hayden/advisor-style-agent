@@ -23,3 +23,4 @@ Rules:
 - Do not invent sources, data, methods, results, or conclusions.
 - Treat revision memory as writing-process guidance, not factual evidence.
 - Keep the public framework discipline-independent.
+- Put field-specific interpretation in local Codex Skills, not in public repository logic.

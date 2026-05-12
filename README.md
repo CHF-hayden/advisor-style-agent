@@ -66,7 +66,20 @@ text. The framework extracts style observations and updates `profiles/*.json`.
 ### 2. Learn From Revisions
 
 Compare an original draft with a revised version or supervisor-edited version.
-The framework stores reusable revision patterns in `revision_memory/`.
+The framework stores reusable revision patterns in
+`revision_memory/{supervisor_id}_revision_memory.json`.
+
+Minimal revision learning record:
+
+```text
+original_text + revised_text + supervisor_id + notes
+  -> observed_changes
+  -> reusable_revision_patterns
+  -> style_preferences
+  -> avoid_patterns
+  -> evidence_boundary_notes
+  -> revision_memory/*.json
+```
 
 ### 3. Rewrite Academic Drafts
 
