@@ -88,13 +88,77 @@ citations or claims.
 
 ## External Skill Layers
 
-Keep the GitHub repository lightweight and domain-agnostic. Examples:
+Keep the GitHub repository lightweight and domain-agnostic.
 
-- Biology rules should live in a local biology writing Skill.
-- Geology rules should live in a local geology writing Skill.
-- Chemistry rules should live in a local chemistry writing Skill.
-- Medicine rules should live in a local medical writing Skill.
-- Engineering rules should live in a local engineering writing Skill.
+Separation of responsibilities:
+
+- Public repo: generic supervisor memory framework, Streamlit UI, prompt
+  templates, JSON memory helpers, Zotero-assisted input scaffolding.
+- Local Codex Skills: private domain knowledge, supervisor-specific habits,
+  unpublished working conventions, SCI writing experience, and field-specific
+  revision preferences.
+
+Do not move private rules from local Skills into this public repository. When a
+task needs private knowledge, explicitly say that it should be supplied by the
+user or loaded from a local Codex Skill.
+
+Examples of local layers, kept private:
+
+- `[DOMAIN_PRIVATE_RULE]`
+- `[SUPERVISOR_STYLE_NOTE]`
+- `[SCI_REVISION_EXPERIENCE]`
+- `[PRIVATE_TERMINOLOGY_PREFERENCE]`
+
+Do not replace these placeholders with real private rules in the public repo.
+
+## Local Skill Collaboration Workflow
+
+Use this workflow when combining the public framework with private Codex Skills:
+
+```text
+1. Collect supervisor papers
+   -> PDFs, abstracts, notes, or pasted representative writing
+
+2. Collect Zotero metadata
+   -> titles, authors, years, abstracts, tags, notes, BibTeX
+
+3. Collect before/after revision pairs
+   -> original draft + supervisor/Codex revised version + optional feedback
+
+4. Update supervisor profile
+   -> profiles/{supervisor_id}_profile.json
+   -> style memory: tone, structure, expressions, argument habits
+
+5. Update revision memory
+   -> revision_memory/{supervisor_id}_revision_memory.json
+   -> revision patterns: changes, preferences, avoid patterns, evidence notes
+
+6. During manuscript revision, load private local Skill context
+   -> [DOMAIN_PRIVATE_RULE]
+   -> [SUPERVISOR_STYLE_NOTE]
+   -> [SCI_REVISION_EXPERIENCE]
+
+7. Rewrite draft using both layers
+   -> public generic memory framework
+   + private local Skill context
+```
+
+Public repository output should remain generic. Private local Skill context can
+guide the revision in the user's environment, but it should not be committed to
+this repository.
+
+## Placeholder Example
+
+Use placeholders in public docs and prompts:
+
+```text
+Apply [SUPERVISOR_STYLE_NOTE] when revising the paragraph structure.
+Check whether [DOMAIN_PRIVATE_RULE] affects terminology or interpretation.
+Use [SCI_REVISION_EXPERIENCE] to decide whether the claim should be softened.
+If evidence is missing, flag it instead of inventing citations.
+```
+
+This example shows where private rules fit without revealing or hardcoding them.
 
 ## Zotero Workflow
 
