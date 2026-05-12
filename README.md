@@ -128,6 +128,11 @@ advisor-style-agent/
 |   `-- zotero_input.py
 |-- profiles/
 |   `-- example_supervisor_profile.json
+|-- skills/
+|   `-- advisor-style-agent-workflow/
+|       |-- SKILL.md
+|       `-- agents/
+|           `-- openai.yaml
 `-- prompts/
     |-- draft_rewriter.md
     |-- draft_rewriter_with_profile.md
@@ -135,6 +140,26 @@ advisor-style-agent/
     |-- profile_updater.md
     |-- style_analyzer.md
     `-- zotero_literature_input.md
+```
+
+## Included Codex Skill
+
+This repository includes a Codex skill for maintaining the project:
+
+```text
+skills/advisor-style-agent-workflow/SKILL.md
+```
+
+The skill captures the main operating rules for this project: supervisor style
+memory lives in `profiles/*.json`, Zotero input should update those profiles,
+and draft rewriting should read the saved profile as style guidance. It also
+keeps the academic integrity rules close to the workflow.
+
+To install or adapt it locally, copy the skill folder into your Codex skills
+directory:
+
+```text
+<CODEX_HOME>/skills/advisor-style-agent-workflow/
 ```
 
 ## Quick Start

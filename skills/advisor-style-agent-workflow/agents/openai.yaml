@@ -1,0 +1,6 @@
+interface:
+  display_name: "AdvisorStyle Agent Workflow"
+  short_description: "Maintain supervisor style memory profiles and Zotero workflows."
+  default_prompt: "Use $advisor-style-agent-workflow to update the AdvisorStyle Agent supervisor style memory workflow."
+policy:
+  allow_implicit_invocation: true
