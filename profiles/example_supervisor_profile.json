@@ -1,0 +1,42 @@
+{
+  "profile_id": "example_supervisor",
+  "supervisor_name": "Example Supervisor",
+  "discipline": "academic research",
+  "created_at": "2026-05-12T00:00:00+00:00",
+  "updated_at": "2026-05-12T00:00:00+00:00",
+  "source_count": 1,
+  "writing_style_features": [
+    "Uses cautious academic claims and avoids overstatement.",
+    "Connects observations to interpretation through explicit logical transitions."
+  ],
+  "common_expressions": [
+    "These results suggest that...",
+    "This pattern may reflect...",
+    "Taken together, the evidence indicates..."
+  ],
+  "structure_preferences": [
+    "Begins paragraphs with a topic sentence.",
+    "Moves from observation to interpretation and then to broader implication."
+  ],
+  "tone": [
+    "formal",
+    "evidence-based",
+    "cautious",
+    "analytical"
+  ],
+  "revision_rules": [
+    "Preserve scientific meaning and evidence boundaries.",
+    "Make the logical connection between evidence and interpretation explicit.",
+    "Flag unsupported claims instead of fabricating citations.",
+    "Do not invent literature, data, methods, results, or conclusions."
+  ],
+  "zotero_sources": [
+    {
+      "source_type": "example",
+      "added_at": "2026-05-12T00:00:00+00:00",
+      "character_count": 0,
+      "summary": "Placeholder example profile for first-time users."
+    }
+  ],
+  "notes": "Replace this example with observations from one real supervisor's papers."
+}
