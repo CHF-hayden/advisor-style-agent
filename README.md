@@ -31,6 +31,7 @@ Zotero / pasted literature
   -> build supervisor profile
   -> update style memory
   -> learn from revisions
+  -> retrieve relevant supervisor memory
   -> rewrite academic drafts
   -> update long-term memory
 ```
@@ -81,13 +82,19 @@ original_text + revised_text + supervisor_id + notes
   -> revision_memory/*.json
 ```
 
-### 3. Rewrite Academic Drafts
+### 3. Retrieve Supervisor Memory
+
+Retrieve relevant supervisor memory before revision. The framework uses
+keyword overlap, simple scoring, and recency preference only. It does not use
+embeddings, vector databases, or external APIs.
+
+### 4. Rewrite Academic Drafts
 
 Select a saved supervisor profile, paste a draft, and generate a
 profile-aware revision prompt. The framework preserves evidence boundaries and
 does not invent sources or data.
 
-### 4. Update Long-term Memory
+### 5. Update Long-term Memory
 
 Each new literature batch or revision pair updates local memory files. The
 model does not become smarter by itself; the project becomes more useful because
@@ -105,6 +112,7 @@ advisor-style-agent/
 |   `-- .gitkeep
 |-- llm/
 |   |-- __init__.py
+|   |-- memory_retriever.py
 |   |-- profile_manager.py
 |   |-- prompt_loader.py
 |   |-- rewrite_engine.py

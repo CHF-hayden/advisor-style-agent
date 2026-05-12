@@ -11,6 +11,7 @@ from llm.profile_manager import (
     load_profile,
     save_profile,
 )
+from llm.memory_retriever import assemble_revision_context
 from llm.revision_memory_manager import learn_from_revision_pair
 from llm.rewrite_engine import build_rewrite_with_profile_result
 from llm.zotero_metadata_ingestor import ingest_zotero_metadata, parse_zotero_metadata
@@ -58,10 +59,11 @@ Domain knowledge belongs in local Codex Skills, not hardcoded in this public rep
     )
 
 
-tab_profile, tab_revision, tab_rewrite, tab_memory, tab_zotero = st.tabs(
+tab_profile, tab_revision, tab_retrieve, tab_rewrite, tab_memory, tab_zotero = st.tabs(
     [
         "Build Supervisor Profile",
         "Learn from Revision Pair",
+        "Retrieve Supervisor Memory",
         "Rewrite Academic Draft",
         "Memory Architecture",
         "Zotero + Codex Skills",
@@ -169,6 +171,42 @@ with tab_revision:
             st.markdown("#### Structured revision memory")
             st.json(result["record"])
             show_prompt_block("LLM prompt for deeper revision-pattern extraction", result["prompt"])
+
+
+with tab_retrieve:
+    st.subheader("Retrieve Supervisor Memory")
+    st.write(
+        "Retrieve relevant local style memory, revision memory, and Zotero source "
+        "notes before revising a manuscript paragraph. This uses keyword overlap "
+        "and recency only; no embeddings or external APIs are used."
+    )
+
+    retrieval_profile = profile_selector("Supervisor profile for retrieval")
+    retrieval_query = st.text_input(
+        "Optional retrieval query",
+        placeholder="Example: cautious phrasing, paragraph logic, evidence support",
+    )
+    manuscript_paragraph = st.text_area(
+        "Manuscript paragraph",
+        height=240,
+        placeholder="Paste the paragraph you want to revise...",
+    )
+
+    if st.button("Retrieve Related Memory", type="primary"):
+        if not retrieval_profile:
+            st.warning("Please create or select a supervisor profile first.")
+        elif not manuscript_paragraph.strip():
+            st.warning("Please paste a manuscript paragraph first.")
+        else:
+            result = assemble_revision_context(
+                supervisor_id=retrieval_profile,
+                manuscript_text=manuscript_paragraph,
+                query=retrieval_query,
+            )
+            st.markdown("#### Retrieved memory")
+            st.json(result["retrieval"])
+            with st.expander("Assembled revision context", expanded=True):
+                st.code(result["assembled_context"], language="markdown")
 
 
 with tab_rewrite:
