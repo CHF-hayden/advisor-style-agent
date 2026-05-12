@@ -1,13 +1,18 @@
 {
   "profile_id": "example_supervisor",
   "supervisor_name": "Example Supervisor",
-  "discipline": "academic research",
+  "discipline": "any academic discipline",
   "created_at": "2026-05-12T00:00:00+00:00",
   "updated_at": "2026-05-12T00:00:00+00:00",
   "source_count": 1,
+  "memory_architecture": {
+    "style_memory": "Writing style observations extracted from supervisor-authored texts.",
+    "revision_memory": "Patterns learned from draft revisions and feedback.",
+    "workflow_memory": "Reusable writing and Zotero-assisted workflow preferences."
+  },
   "writing_style_features": [
     "Uses cautious academic claims and avoids overstatement.",
-    "Connects observations to interpretation through explicit logical transitions."
+    "Connects evidence to interpretation through explicit logical transitions."
   ],
   "common_expressions": [
     "These results suggest that...",
@@ -25,10 +30,21 @@
     "analytical"
   ],
   "revision_rules": [
-    "Preserve scientific meaning and evidence boundaries.",
-    "Make the logical connection between evidence and interpretation explicit.",
+    "Preserve the author's intended meaning.",
+    "Make the connection between evidence and interpretation explicit.",
     "Flag unsupported claims instead of fabricating citations.",
-    "Do not invent literature, data, methods, results, or conclusions."
+    "Do not invent literature, data, methods, results, or conclusions.",
+    "Use discipline-specific knowledge only when supplied through local context or Codex Skills."
+  ],
+  "revision_memory": [
+    "Prefer concise topic sentences before detailed evidence.",
+    "Keep uncertainty visible when the source draft is uncertain."
+  ],
+  "workflow_memory": [
+    "Import Zotero or pasted literature context.",
+    "Update supervisor style memory.",
+    "Rewrite draft using saved profile.",
+    "Record revision patterns for future improvement."
   ],
   "zotero_sources": [
     {
@@ -38,5 +54,12 @@
       "summary": "Placeholder example profile for first-time users."
     }
   ],
-  "notes": "Replace this example with observations from one real supervisor's papers."
+  "external_skill_layers": [
+    "biology",
+    "geology",
+    "chemistry",
+    "medicine",
+    "engineering"
+  ],
+  "notes": "This profile is domain-agnostic. Add specialized domain knowledge through local Codex Skills."
 }

@@ -1,0 +1,32 @@
+{
+  "profile_id": "example_supervisor",
+  "supervisor_name": "",
+  "discipline": "any academic discipline",
+  "created_at": "",
+  "updated_at": "",
+  "source_count": 0,
+  "memory_architecture": {
+    "style_memory": "Writing style observations extracted from supervisor-authored texts.",
+    "revision_memory": "Patterns learned from draft revisions and feedback.",
+    "workflow_memory": "Reusable writing and Zotero-assisted workflow preferences."
+  },
+  "writing_style_features": [],
+  "common_expressions": [],
+  "structure_preferences": [],
+  "tone": [],
+  "revision_rules": [
+    "Preserve the author's intended meaning.",
+    "Do not invent literature, data, methods, results, or conclusions.",
+    "Use discipline-specific knowledge only when supplied through local context or Codex Skills."
+  ],
+  "revision_memory": [],
+  "workflow_memory": [
+    "Import literature context.",
+    "Update supervisor style memory.",
+    "Rewrite draft using saved profile.",
+    "Record revision patterns for future improvement."
+  ],
+  "zotero_sources": [],
+  "external_skill_layers": [],
+  "notes": "Keep this profile domain-agnostic. Add discipline knowledge through local Codex Skills."
+}
