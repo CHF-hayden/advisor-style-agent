@@ -1,0 +1,19 @@
+{
+  "workflow_id": "academic_writing_workflow",
+  "purpose": "Reusable workflow memory for long-term academic writing support.",
+  "steps": [
+    "Import Zotero or pasted literature context.",
+    "Build or update supervisor style memory.",
+    "Learn from prior revisions.",
+    "Rewrite the current draft using saved memory.",
+    "Record useful revision patterns for future use."
+  ],
+  "external_skill_layers": [
+    "biology",
+    "geology",
+    "chemistry",
+    "medicine",
+    "engineering"
+  ],
+  "rule": "Keep the public repository general-purpose. Put specialized domain knowledge in local Codex Skills."
+}

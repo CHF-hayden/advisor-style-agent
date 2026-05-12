@@ -1,12 +1,12 @@
 ---
 name: advisor-style-agent-workflow
-description: Use when working on the AdvisorStyle Agent repository, supervisor writing style memory, profiles/*.json, Zotero-based literature input, Codex academic rewriting workflows, or prompt templates for long-term supervisor-style academic writing assistance.
+description: Use when working on the AdvisorStyle Agent repository, a domain-agnostic academic supervisor memory framework for persistent style memory, revision memory, workflow memory, Zotero-assisted literature input, external Codex Skill layers, and prompt templates for long-term academic writing agents.
 ---
 
 # AdvisorStyle Agent Workflow
 
 Use this skill for tasks involving the `advisor-style-agent` project and its
-long-term supervisor writing style memory workflow.
+domain-agnostic academic supervisor memory workflow.
 
 ## Core Concept
 
@@ -19,7 +19,8 @@ profiles/professor_x_profile.json
 
 Each batch of supervisor papers, Zotero metadata, abstracts, notes, or pasted
 paper text should update a supervisor profile. Later draft rewriting should read
-that saved profile and use it as style guidance only.
+that saved profile and use it as style guidance only. Domain knowledge belongs
+in external local Codex Skills, not in the public repository.
 
 ## Default Workflow
 
@@ -27,8 +28,8 @@ that saved profile and use it as style guidance only.
 2. Inspect `app.py`, `llm/`, `prompts/`, `profiles/`, and `README.md`.
 3. Preserve the simple Streamlit structure unless the user asks for a larger
    architecture.
-4. For style-memory changes, keep the data path explicit:
-   Zotero input -> profile update -> saved JSON profile -> profile-aware rewrite.
+4. For memory changes, keep the data path explicit:
+   Zotero input -> profile update -> revision memory -> profile-aware rewrite.
 5. Validate by importing the relevant helper functions with `python -B`.
 6. If publishing changes, create a clear branch, commit only intended files, and
    push to GitHub.
@@ -42,9 +43,16 @@ that saved profile and use it as style guidance only.
 - Do not upload unpublished data or private drafts unless the user explicitly
   says the material can be shared.
 
-## Profile Design Rules
+## Memory Design Rules
 
-Supervisor profiles should stay JSON and beginner-readable. Prefer fields like:
+Supervisor profiles should stay JSON and beginner-readable. The architecture has
+three memory layers:
+
+- style memory: supervisor writing style and expression patterns
+- revision memory: lessons from draft revisions and feedback
+- workflow memory: reusable writing and Zotero-assisted workflow steps
+
+Prefer fields like:
 
 - `profile_id`
 - `supervisor_name`
@@ -54,7 +62,10 @@ Supervisor profiles should stay JSON and beginner-readable. Prefer fields like:
 - `structure_preferences`
 - `tone`
 - `revision_rules`
+- `revision_memory`
+- `workflow_memory`
 - `zotero_sources`
+- `external_skill_layers`
 - `notes`
 
 When updating a profile, append source summaries and keep uncertain observations
@@ -74,6 +85,16 @@ boundaries. The important templates are:
 
 Prompts should ask the LLM to flag missing evidence instead of fabricating
 citations or claims.
+
+## External Skill Layers
+
+Keep the GitHub repository lightweight and domain-agnostic. Examples:
+
+- Biology rules should live in a local biology writing Skill.
+- Geology rules should live in a local geology writing Skill.
+- Chemistry rules should live in a local chemistry writing Skill.
+- Medicine rules should live in a local medical writing Skill.
+- Engineering rules should live in a local engineering writing Skill.
 
 ## Zotero Workflow
 

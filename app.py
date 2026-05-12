@@ -6,10 +6,13 @@ import streamlit as st
 
 from llm.profile_manager import (
     build_profile_update,
+    build_revision_memory_update,
     default_profile_path,
+    default_revision_memory_path,
     list_profiles,
     load_profile,
     save_profile,
+    save_revision_memory,
 )
 from llm.rewrite_engine import build_rewrite_with_profile_result
 
@@ -30,43 +33,48 @@ def profile_selector(label: str) -> str:
     profiles = list_profiles()
     if not profiles:
         return ""
-    selected = st.selectbox(label, profiles)
-    return selected
+    return st.selectbox(label, profiles)
 
 
 st.title("AdvisorStyle Agent")
 st.caption(
-    "A long-term supervisor-style academic writing assistant for Codex, "
-    "Zotero-based literature input, and reusable style memory."
+    "A domain-agnostic academic supervisor memory framework for persistent "
+    "style memory, revision learning, and Zotero-assisted writing workflows."
 )
 
 with st.sidebar:
-    st.header("Style Memory")
-    st.write("The agent grows by updating local JSON files in `profiles/`.")
+    st.header("Academic Memory")
+    st.write("This is not a chatbot. It is a local memory framework.")
     st.code("profiles/professor_x_profile.json", language="text")
-    st.info(
-        "The model does not become smarter by itself. Each new batch of "
-        "supervisor papers should update the saved profile, and draft rewriting "
-        "should read that profile."
+    st.markdown(
+        """
+**Memory layers**
+
+- Style memory
+- Revision memory
+- Workflow memory
+
+Domain knowledge belongs in local Codex Skills, not hardcoded in this public repo.
+        """
     )
 
 
-tab_build, tab_view, tab_rewrite, tab_zotero = st.tabs(
+tab_profile, tab_revision, tab_rewrite, tab_memory, tab_zotero = st.tabs(
     [
-        "Build / Update Supervisor Profile",
-        "View Supervisor Profile",
-        "Rewrite My Draft",
-        "Zotero Workflow Guide",
+        "Build Supervisor Profile",
+        "Learn From Revisions",
+        "Rewrite Academic Draft",
+        "Memory Architecture",
+        "Zotero + Codex Skills",
     ]
 )
 
 
-with tab_build:
+with tab_profile:
     st.subheader("Build / Update Supervisor Profile")
     st.write(
         "Paste Zotero metadata, abstracts, notes, or paper text from one supervisor. "
-        "The app will update a local JSON profile, which acts as the supervisor "
-        "style memory."
+        "The app updates a domain-agnostic style profile in `profiles/`."
     )
 
     col_a, col_b = st.columns([1, 1])
@@ -74,21 +82,21 @@ with tab_build:
         supervisor_id = st.text_input(
             "Supervisor profile ID",
             value="example_supervisor",
-            help="Use a short file-safe name, such as wang_lab or advisor_chen.",
+            help="Use a short file-safe name such as professor_x or lab_advisor.",
         )
         discipline = st.text_input(
-            "Discipline or writing context",
-            value="academic research",
-            placeholder="Example: geology, sedimentology, environmental science",
+            "Discipline label",
+            value="general academic writing",
+            help="This is descriptive metadata only. No domain logic is hardcoded.",
         )
     with col_b:
         source_type = st.selectbox(
             "Input source",
             [
-                "Pasted paper text",
                 "Zotero metadata",
-                "Zotero notes",
                 "Abstracts",
+                "Pasted paper text",
+                "Supervisor notes",
                 "Mixed literature context",
             ],
         )
@@ -98,12 +106,12 @@ with tab_build:
         "Supervisor literature input",
         height=260,
         placeholder=(
-            "Paste one supervisor's abstracts, Zotero item summaries, notes, "
+            "Paste supervisor-authored abstracts, Zotero item summaries, notes, "
             "or representative paper excerpts here..."
         ),
     )
 
-    if st.button("Update Supervisor Profile", type="primary"):
+    if st.button("Update Style Memory", type="primary"):
         if not supervisor_id.strip():
             st.warning("Please enter a supervisor profile ID.")
         elif not literature_input.strip():
@@ -123,33 +131,52 @@ with tab_build:
             else:
                 st.success("Profile preview generated.")
 
-            st.markdown("#### Updated profile preview")
+            st.markdown("#### Updated style memory preview")
             st.json(result["profile"])
             show_prompt_block("Profile-builder prompt", result["builder_prompt"])
             show_prompt_block("Profile-updater prompt", result["updater_prompt"])
 
 
-with tab_view:
-    st.subheader("View Supervisor Profile")
-    selected_profile = profile_selector("Choose a saved profile")
+with tab_revision:
+    st.subheader("Learn From Revisions")
+    st.write(
+        "Compare an original draft with a revised version. The app prepares "
+        "revision-memory guidance that can be saved in `revision_memory/`."
+    )
 
-    if selected_profile:
-        profile = load_profile(selected_profile)
-        st.markdown(f"#### `{selected_profile}`")
-        st.json(profile)
+    profile_id = profile_selector("Supervisor profile for revision memory")
+    original_draft = st.text_area("Original draft", height=180)
+    revised_draft = st.text_area("Revised draft or supervisor-edited version", height=180)
+    feedback_notes = st.text_area(
+        "Optional feedback notes",
+        height=120,
+        placeholder="Paste reviewer, supervisor, or Codex revision notes here...",
+    )
 
-        with st.expander("Copyable profile JSON", expanded=False):
-            st.code(json.dumps(profile, indent=2, ensure_ascii=False), language="json")
-    else:
-        st.warning("No profiles found. Create one in the first tab.")
+    if st.button("Update Revision Memory", type="primary"):
+        if not profile_id:
+            st.warning("Please create or select a supervisor profile first.")
+        elif not original_draft.strip() or not revised_draft.strip():
+            st.warning("Please provide both the original and revised draft.")
+        else:
+            result = build_revision_memory_update(
+                profile_id=profile_id,
+                original_draft=original_draft,
+                revised_draft=revised_draft,
+                feedback_notes=feedback_notes,
+            )
+            save_revision_memory(profile_id, result["record"])
+            st.success(f"Revision memory saved to `{default_revision_memory_path(profile_id)}`.")
+            st.json(result["record"])
+            show_prompt_block("Revision-memory updater prompt", result["prompt"])
 
 
 with tab_rewrite:
-    st.subheader("Rewrite My Draft")
+    st.subheader("Rewrite Academic Draft")
     st.write(
         "Select a saved supervisor profile, paste your draft, and generate a "
-        "profile-aware academic rewriting prompt. The saved profile is the memory "
-        "used during revision."
+        "profile-aware academic rewriting prompt. Any discipline-specific rules "
+        "should come from local Codex Skills or user-provided context."
     )
 
     selected_profile = profile_selector("Supervisor profile")
@@ -188,21 +215,62 @@ with tab_rewrite:
             show_prompt_block("Draft rewriter with saved profile", result["prompt"])
 
 
+with tab_memory:
+    st.subheader("Memory Architecture")
+    selected_profile = profile_selector("View saved profile")
+
+    st.markdown(
+        """
+AdvisorStyle Agent uses three memory layers:
+
+| Layer | Stored in | Purpose |
+|---|---|---|
+| Style memory | `profiles/*.json` | Supervisor writing style, tone, structure, expressions |
+| Revision memory | `revision_memory/*.json` | Patterns learned from original/revised draft pairs |
+| Workflow memory | `templates/` and profile fields | Reusable writing and Zotero-assisted workflow steps |
+
+The public repository stays discipline-independent. Biology, geology, chemistry,
+medicine, engineering, and other domain rules should be layered through local
+Codex Skills or user-provided context.
+        """
+    )
+
+    if selected_profile:
+        profile = load_profile(selected_profile)
+        st.markdown(f"#### `{selected_profile}`")
+        st.json(profile)
+        with st.expander("Copyable profile JSON", expanded=False):
+            st.code(json.dumps(profile, indent=2, ensure_ascii=False), language="json")
+
+
 with tab_zotero:
-    st.subheader("Zotero Workflow Guide")
+    st.subheader("Zotero + External Codex Skills")
     st.write(
-        "Use Zotero Skill or Zotero exports to collect literature from one supervisor, "
-        "then paste the cleaned output into the profile builder."
+        "Use Zotero Skill to retrieve literature context. Use local Codex Skills "
+        "to add domain knowledge without hardcoding it into this GitHub framework."
     )
 
     st.markdown(
         """
-1. Search the supervisor's papers in Zotero.
-2. Export metadata, abstracts, notes, or BibTeX.
-3. Paste that material into **Build / Update Supervisor Profile**.
-4. Save the profile in `profiles/`.
-5. Use the saved profile in **Rewrite My Draft**.
+**Framework workflow**
+
+1. Zotero provides literature metadata, abstracts, notes, or BibTeX.
+2. AdvisorStyle Agent updates supervisor style memory.
+3. Revision memory learns from edited drafts and feedback.
+4. Local Codex Skills add discipline-specific knowledge when needed.
+5. The public repository remains lightweight and general-purpose.
         """
+    )
+
+    st.markdown("#### Example discipline layers")
+    st.table(
+        [
+            {"Discipline": "Biology", "Local skill layer": "experimental design, gene/protein terminology, reporting norms"},
+            {"Discipline": "Geology", "Local skill layer": "stratigraphy, sedimentology, geochemistry conventions"},
+            {"Discipline": "Chemistry", "Local skill layer": "reaction conditions, analytical methods, compound naming"},
+            {"Discipline": "Medicine", "Local skill layer": "clinical evidence, reporting standards, ethics constraints"},
+            {"Discipline": "Engineering", "Local skill layer": "design constraints, evaluation metrics, system architecture"},
+        ]
     )
 
     st.markdown("#### Example Zotero Skill commands")

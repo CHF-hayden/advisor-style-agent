@@ -11,10 +11,11 @@ from llm.prompt_loader import load_prompt_template, render_template
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PROFILE_DIR = PROJECT_ROOT / "profiles"
+REVISION_MEMORY_DIR = PROJECT_ROOT / "revision_memory"
 
 
 def slugify_profile_id(profile_id: str) -> str:
-    """Create a simple file-safe profile id."""
+    """Create a simple file-safe memory id."""
     value = re.sub(r"[^a-zA-Z0-9_-]+", "_", profile_id.strip()).strip("_")
     return value or "example_supervisor"
 
@@ -52,17 +53,29 @@ def create_empty_profile(profile_id: str, discipline: str = "academic research")
         "created_at": now,
         "updated_at": now,
         "source_count": 0,
+        "memory_architecture": {
+            "style_memory": "Writing style observations extracted from supervisor-authored texts.",
+            "revision_memory": "Patterns learned from draft revisions and feedback.",
+            "workflow_memory": "Reusable writing and Zotero-assisted workflow preferences.",
+        },
         "writing_style_features": [],
         "common_expressions": [],
         "structure_preferences": [],
         "tone": [],
+        "revision_memory": [],
+        "workflow_memory": [
+            "Import literature context.",
+            "Update supervisor style memory.",
+            "Rewrite draft using saved profile.",
+            "Record revision patterns for future improvement.",
+        ],
         "revision_rules": [
             "Preserve scientific meaning and evidence boundaries.",
             "Do not invent literature, data, methods, results, or conclusions.",
             "Flag unsupported claims instead of fabricating citations.",
         ],
         "zotero_sources": [],
-        "notes": "This is a local style-memory profile. Update it with supervisor papers over time.",
+        "notes": "This is a domain-agnostic academic memory profile. Layer discipline knowledge through local Codex Skills.",
     }
 
 
@@ -91,7 +104,8 @@ def build_profile_update(
 
     _append_unique(profile, "writing_style_features", f"New {source_type.lower()} input added for style analysis.")
     _append_unique(profile, "structure_preferences", "Use the profile-builder prompt to extract durable section and paragraph preferences.")
-    _append_unique(profile, "tone", "Keep claims cautious, evidence-based, and discipline-appropriate.")
+    _append_unique(profile, "tone", "Keep claims cautious, evidence-based, and appropriate for the target discipline.")
+    _append_unique(profile, "workflow_memory", "Keep domain knowledge in local Codex Skills instead of hardcoding it into the public framework.")
 
     builder_template = load_prompt_template("profile_builder.md")
     updater_template = load_prompt_template("profile_updater.md")
@@ -121,3 +135,49 @@ def _append_unique(profile: dict[str, Any], key: str, value: str) -> None:
     items = profile.setdefault(key, [])
     if value not in items:
         items.append(value)
+
+
+def default_revision_memory_path(profile_id: str) -> Path:
+    return REVISION_MEMORY_DIR / f"{slugify_profile_id(profile_id)}_revision_memory.json"
+
+
+def build_revision_memory_update(
+    profile_id: str,
+    original_draft: str,
+    revised_draft: str,
+    feedback_notes: str = "",
+) -> dict[str, Any]:
+    """Prepare a revision-memory record and prompt for learning from edits."""
+    now = datetime.now(timezone.utc).isoformat()
+    record = {
+        "profile_id": slugify_profile_id(profile_id),
+        "updated_at": now,
+        "original_draft_characters": len(original_draft),
+        "revised_draft_characters": len(revised_draft),
+        "feedback_notes": feedback_notes,
+        "learned_revision_patterns": [
+            "Compare original and revised drafts before adding stable rules.",
+            "Store revision patterns as guidance, not as factual evidence.",
+            "Keep domain-specific conventions in local Codex Skills.",
+        ],
+    }
+    template = load_prompt_template("revision_memory_updater.md")
+    prompt = render_template(
+        template,
+        profile_id=record["profile_id"],
+        original_draft=original_draft,
+        revised_draft=revised_draft,
+        feedback_notes=feedback_notes or "No feedback notes provided.",
+    )
+    return {"record": record, "prompt": prompt}
+
+
+def save_revision_memory(profile_id: str, record: dict[str, Any]) -> Path:
+    REVISION_MEMORY_DIR.mkdir(parents=True, exist_ok=True)
+    path = default_revision_memory_path(profile_id)
+    existing: list[dict[str, Any]] = []
+    if path.exists():
+        existing = json.loads(path.read_text(encoding="utf-8"))
+    existing.append(record)
+    path.write_text(json.dumps(existing, indent=2, ensure_ascii=False), encoding="utf-8")
+    return path
