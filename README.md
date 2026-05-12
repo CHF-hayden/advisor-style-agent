@@ -1,75 +1,175 @@
-📌 AdvisorStyle Agent
+# AdvisorStyle Agent
 
-AI-powered Academic Writing Assistant with Supervisor Style Modeling
+> AI-powered Academic Writing Assistant with Supervisor Style Modeling
 
-🧠 Overview
+---
+
+## Overview
 
 AdvisorStyle Agent is an AI-assisted academic writing system built with Codex and LLMs.
-It helps researchers improve paper writing by learning the writing style of a specific supervisor (or academic author) and applying it to text revision and structure optimization.
 
-The system integrates:
+The project aims to help researchers improve academic writing quality by learning the writing style of a specific supervisor (or academic author) and applying it to paper revision and structure optimization.
 
-Codex-based coding & writing workflow
-LLM-powered style analysis (GPT / DeepSeek)
-Zotero API for academic reference management
-🎯 Key Features
-✍️ 1. Supervisor Style Modeling
-Analyze papers from a target supervisor
-Extract writing patterns:
-sentence structure
-academic tone
-logical flow style
-🧾 2. Academic Writing Assistant
-Rewrite drafts in supervisor style
-Improve clarity and academic tone
-Maintain structural consistency
-📚 3. Zotero Integration (Optional)
-Manage academic papers
-Assist citation organization
-Support literature-based writing workflows
-⚙️ 4. Codex-based Workflow
-Generate paper structure
-Assist code / LaTeX writing
-Accelerate academic drafting
-🏗️ System Architecture
-User Input (Paper Draft)
+The system combines:
+
+- Codex-based writing workflow
+- LLM-powered style analysis
+- Zotero API integration
+- Academic writing optimization
+
+---
+
+## Core Features
+
+### 1. Supervisor Style Modeling
+
+Analyze papers from a target supervisor and extract:
+
+- Sentence structure patterns
+- Academic tone
+- Logical organization style
+- Writing preferences
+
+---
+
+### 2. Academic Writing Assistant
+
+Rewrite paper drafts based on extracted style features.
+
+Functions include:
+
+- Academic polishing
+- Structural optimization
+- Tone consistency
+- Writing clarity enhancement
+
+---
+
+### 3. Zotero Integration
+
+Integrate Zotero API for:
+
+- Literature organization
+- Citation workflow
+- Academic reference management
+
+---
+
+### 4. Codex-based Workflow
+
+Use Codex for:
+
+- Paper structure generation
+- Writing assistance
+- LaTeX/code support
+- Prompt-driven revision workflow
+
+---
+
+## System Workflow
+
+```text
+Supervisor Papers
         ↓
-Style Analyzer (LLM)
+Style Analysis (LLM)
         ↓
-Supervisor Style Profile
+Writing Style Profile
         ↓
-Rewrite Engine (LLM + Prompting)
+Paper Draft Input
         ↓
-Optimized Academic Paper
-🛠️ Tech Stack
-Codex / GPT / DeepSeek
-Python
-Streamlit
-Zotero API
-Prompt Engineering
-🚀 Quick Start
-1. Clone repo
-git clone https://github.com/yourname/advisor-style-agent.git
-cd advisor-style-agent
-2. Install dependencies
+Rewrite & Optimization
+        ↓
+Improved Academic Paper
+```
+
+---
+
+## Tech Stack
+
+| Component | Technology |
+|---|---|
+| LLM | GPT / DeepSeek |
+| Workflow | Codex |
+| Backend | Python |
+| UI | Streamlit |
+| Reference System | Zotero API |
+| Prompting | Prompt Engineering |
+
+---
+
+## Project Structure
+
+```text
+advisor-style-agent/
+│
+├── app.py
+├── README.md
+├── requirements.txt
+│
+├── llm/
+│   ├── style_analyzer.py
+│   └── rewrite_engine.py
+│
+├── prompts/
+│   ├── style_prompt.txt
+│   └── rewrite_prompt.txt
+│
+└── data/
+    └── supervisor_papers/
+```
+
+---
+
+## Quick Start
+
+### Install dependencies
+
+```bash
 pip install -r requirements.txt
-3. Run app
+```
+
+### Run the project
+
+```bash
 streamlit run app.py
-📌 Example Workflow
-Upload supervisor paper(s)
-System extracts writing style
-Paste your draft
-Get rewritten version in supervisor style
-🧪 Current Status
-✔ Prototype completed
-✔ Codex writing workflow tested
-✔ Zotero API integration explored
-🔄 Supervisor style modeling in progress
-🔮 Future Work
-Multi-supervisor style comparison
-Automatic citation optimization
-Full agent-based writing pipeline
-LaTeX paper generation mode
-📄 License
+```
+
+---
+
+## Example Use Case
+
+1. Upload supervisor papers
+2. Extract writing style profile
+3. Input paper draft
+4. Generate revised academic version
+
+---
+
+## Current Progress
+
+- Prototype completed
+- Codex writing workflow tested
+- Zotero API workflow explored
+- Style modeling experiments ongoing
+
+---
+
+## Future Work
+
+- Multi-supervisor style comparison
+- Citation optimization
+- Full agent workflow
+- LaTeX paper generation
+- Long-context academic memory
+
+---
+
+## Motivation
+
+This project explores how LLMs and AI agents can improve personalized academic writing workflows while maintaining consistency with supervisor writing styles.
+
+---
+
+## License
 
 MIT License
