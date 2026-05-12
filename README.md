@@ -24,6 +24,29 @@ user's research workflow:
    style that is closer to the target supervisor while preserving academic
    integrity.
 
+## Style Memory Principle
+
+The system does not become smarter by changing the model itself. Its long-term
+memory is a local profile file, for example:
+
+```text
+profiles/professor_x_profile.json
+```
+
+Each time you feed a new batch of supervisor papers, Zotero metadata, abstracts,
+or notes into the project, the app should update that profile. Later, when you
+rewrite your own draft, the app reads the saved profile and uses it as style
+guidance.
+
+```mermaid
+flowchart TD
+    A["Supervisor papers in Zotero"] --> B["Codex / Zotero Skill retrieves literature information"]
+    B --> C["AdvisorStyle Agent analyzes writing style"]
+    C --> D["Update profiles/professor_x_profile.json"]
+    D --> E["User inputs academic draft"]
+    E --> F["System polishes and revises using saved supervisor style"]
+```
+
 ## Streamlit Tabs
 
 ### 1. Build / Update Supervisor Profile
@@ -239,6 +262,25 @@ This project is designed for rigorous academic writing support:
 AdvisorStyle Agent 是一个面向长期学术写作训练的 Streamlit 小工具。它的目标不是一次性润色文本，而是帮助用户持续积累某位导师或目标作者的写作风格画像，并在 Codex 中用这个画像辅助论文草稿修改。
 
 当前版本不需要 API key。系统会把导师风格画像保存在本地 `profiles/` 文件夹中，并生成可交给 LLM 的结构化提示词。
+
+## 风格记忆原则
+
+这里的“让它一直成长”，不是指模型自己真的变聪明，也不是修改模型权重。项目的长期记忆就是一个持续更新的本地文件，例如：
+
+```text
+profiles/professor_x_profile.json
+```
+
+以后每喂一批导师论文、Zotero 文献元数据、摘要或笔记，就更新这个 profile。后面润色自己的论文草稿时，系统读取这个 profile，并把它作为导师写作风格参考。
+
+```mermaid
+flowchart TD
+    A["Zotero 中的导师论文"] --> B["Codex / Zotero Skill 调用文献信息"]
+    B --> C["AdvisorStyle Agent 分析导师写作风格"]
+    C --> D["保存或更新 Supervisor Style Profile"]
+    D --> E["你输入自己的论文草稿"]
+    E --> F["系统按导师风格润色、修改、优化"]
+```
 
 ## 长期目标
 

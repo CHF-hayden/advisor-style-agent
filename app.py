@@ -42,10 +42,12 @@ st.caption(
 
 with st.sidebar:
     st.header("Style Memory")
-    st.write("Profiles are saved locally in `profiles/` as JSON files.")
+    st.write("The agent grows by updating local JSON files in `profiles/`.")
+    st.code("profiles/professor_x_profile.json", language="text")
     st.info(
-        "This app does not require an API key. It builds local profile files "
-        "and LLM-ready prompts that can later be sent to a model provider."
+        "The model does not become smarter by itself. Each new batch of "
+        "supervisor papers should update the saved profile, and draft rewriting "
+        "should read that profile."
     )
 
 
@@ -63,7 +65,8 @@ with tab_build:
     st.subheader("Build / Update Supervisor Profile")
     st.write(
         "Paste Zotero metadata, abstracts, notes, or paper text from one supervisor. "
-        "The app will update a local JSON profile and prepare an LLM-ready update prompt."
+        "The app will update a local JSON profile, which acts as the supervisor "
+        "style memory."
     )
 
     col_a, col_b = st.columns([1, 1])
@@ -145,7 +148,8 @@ with tab_rewrite:
     st.subheader("Rewrite My Draft")
     st.write(
         "Select a saved supervisor profile, paste your draft, and generate a "
-        "profile-aware academic rewriting prompt."
+        "profile-aware academic rewriting prompt. The saved profile is the memory "
+        "used during revision."
     )
 
     selected_profile = profile_selector("Supervisor profile")
