@@ -20,11 +20,11 @@ this repository.
 
 ## What This Framework Does
 
-| Memory layer | Stored in | Purpose |
+| Memory Layer | Stored In | Purpose |
 |---|---|---|
-| Style memory | `profiles/*.json` | Supervisor writing style, tone, structure, expressions |
+| Style memory | `profiles/*.json` | Supervisor writing style, tone, structure, and expressions |
 | Revision memory | `revision_memory/*.json` | Patterns learned from original/revised draft pairs |
-| Workflow memory | `templates/` and profile fields | Reusable Zotero + Codex writing workflows |
+| Workflow memory | `templates/` | Reusable Zotero + Codex writing workflows |
 
 ```text
 Zotero / pasted literature
@@ -38,25 +38,22 @@ Zotero / pasted literature
 ## Architecture
 
 ```mermaid
-flowchart LR
-    classDef framework fill:#eef6ff,stroke:#2563eb,color:#0f172a,stroke-width:1px;
-    classDef local fill:#f0fdf4,stroke:#16a34a,color:#0f172a,stroke-width:1px;
-    classDef memory fill:#fff7ed,stroke:#f97316,color:#0f172a,stroke-width:1px;
-    classDef output fill:#f8fafc,stroke:#64748b,color:#0f172a,stroke-width:1px;
+flowchart TB
+    A["[Zotero] Literature Input<br/>metadata / abstracts / notes"]
+    B["[Skills] Local Codex Skills<br/>domain knowledge layer"]
+    C["[Framework] AdvisorStyle Framework<br/>Streamlit + prompts + memory helpers"]
+    D["[Memory] Persistent Memory<br/>profiles + revision_memory + templates"]
+    E["[Draft] Academic Draft"]
+    F["[Revision] Profile-aware Revision<br/>style + logic + clarity"]
+    G["[Output] Revised Academic Draft"]
 
-    Z["Zotero workflow<br/>metadata / abstracts / notes"]:::local
-    S["Local Codex Skills<br/>biology / geology / chemistry / medicine / engineering"]:::local
-    F["GitHub framework<br/>Streamlit + prompts + memory helpers"]:::framework
-    M["Supervisor memory<br/>profiles / revision_memory / templates"]:::memory
-    D["Academic draft"]:::output
-    R["Profile-aware revision prompt"]:::output
-
-    Z --> F
-    S -. domain layer .-> F
-    F --> M
-    M --> R
-    D --> R
-    R --> M
+    A --> C
+    B -. optional domain context .-> C
+    C --> D
+    D --> F
+    E --> F
+    F --> G
+    F --> D
 ```
 
 ## Core Workflows
@@ -150,13 +147,13 @@ python3 <plugin-root>/skills/zotero/scripts/zotero.py citations --style apa --js
 
 Local Codex Skills can add domain knowledge without changing the public repo:
 
-| Discipline | Example local Skill layer | Public repo behavior |
+| Discipline | Example Local Skill Layer | Public Repo Behavior |
 |---|---|---|
-| Biology | gene/protein terminology, experimental reporting norms | stores style and revision memory only |
-| Geology | stratigraphy, sedimentology, geochemistry conventions | does not hardcode geology logic |
-| Chemistry | compound naming, reaction conditions, analytical methods | uses user/skill context when supplied |
-| Medicine | clinical evidence standards, ethics constraints, reporting guidelines | avoids domain claims without evidence |
-| Engineering | design constraints, system metrics, evaluation structure | keeps workflow and memory generic |
+| Biology | Gene/protein terminology, experimental reporting norms | Stores style and revision memory only |
+| Geology | Stratigraphy, sedimentology, geochemistry conventions | Does not hardcode geology logic |
+| Chemistry | Compound naming, reaction conditions, analytical methods | Uses user/skill context when supplied |
+| Medicine | Clinical evidence standards, ethics constraints, reporting guidelines | Avoids domain claims without evidence |
+| Engineering | Design constraints, system metrics, evaluation structure | Keeps workflow and memory generic |
 
 ## Codex Usage Examples
 
@@ -248,7 +245,7 @@ Zotero 文献 / 手动粘贴文本
 |---|---|---|
 | Style memory | `profiles/*.json` | 导师写作风格、语气、结构、常用表达 |
 | Revision memory | `revision_memory/*.json` | 从原稿/改稿中学习修改规律 |
-| Workflow memory | `templates/` 和 profile 字段 | Zotero + Codex 写作流程 |
+| Workflow memory | `templates/` | Zotero + Codex 写作流程模板 |
 
 ## 跨学科使用方式
 
